@@ -53,8 +53,8 @@ type Entry struct {
 	Issuer   string
 	Note     string
 	Icon     string
-	IconMime string
-	IconHash string
+	IconMime string `json:"icon_mime"`
+	IconHash string `json:"icon_hash"`
 	Favorite bool
 	Info     Info
 	Groups   []string
@@ -74,6 +74,8 @@ type Group struct {
 	Name string
 }
 
+// ReadVaultFile parses the json file at the path
+// and returns a vault.
 func ReadVaultFile(filePath string) (*Vault, error) {
 	var vault Vault
 
@@ -87,6 +89,8 @@ func ReadVaultFile(filePath string) (*Vault, error) {
 	return &vault, err
 }
 
+// ReadVaultFileEnc parses the json file at the path
+// and returns an encrypted vault.
 func ReadVaultFileEnc(filePath string) (*VaultEncrypted, error) {
 	var vault VaultEncrypted
 
@@ -113,7 +117,7 @@ func (h Header) String() string {
 }
 
 func (s Slot) String() string {
-	var outputFormat string = "Slot{ type: %v, uuid: %v, key: %v, key_params: %v, "
+	var outputFormat string = "Slot{ type: %v, uuid: %v, key: %v, keyParams: %v, "
 	outputFormat += "n: %v, r: %v, p: %v, salt: %v, repaired: %v }"
 
 	var fields []interface{} = []interface{}{
@@ -141,7 +145,7 @@ func (d Db) String() string {
 
 func (e Entry) String() string {
 	var outputFormat string = "Entry{ type: %v, uuid: %v, name: %v, issuer: %v, note: %v, "
-	outputFormat += "icon: %v, icon_mime: %v, icon_hash: %v, favorite: %v, "
+	outputFormat += "icon: %v, iconMime: %v, iconHash: %v, favorite: %v, "
 	outputFormat += "info: %v, groups: %v }"
 
 	var fields []interface{} = []interface{}{

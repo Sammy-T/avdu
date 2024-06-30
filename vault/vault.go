@@ -27,7 +27,7 @@ type Slot struct {
 	Type      int
 	Uuid      string
 	Key       string
-	KeyParams Params
+	KeyParams Params `json:"key_params"`
 	N         int
 	R         int
 	P         int

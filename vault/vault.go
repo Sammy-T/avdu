@@ -74,37 +74,37 @@ type Group struct {
 	Name string
 }
 
-func ReadVaultFile(filePath string) (Vault, error) {
+func ReadVaultFile(filePath string) (*Vault, error) {
 	var vault Vault
 
 	data, err := os.ReadFile(filePath)
 	if err != nil {
-		return vault, err
+		return nil, err
 	}
 
 	err = json.Unmarshal(data, &vault)
 
-	return vault, err
+	return &vault, err
 }
 
-func ReadVaultFileEnc(filePath string) (VaultEncrypted, error) {
+func ReadVaultFileEnc(filePath string) (*VaultEncrypted, error) {
 	var vault VaultEncrypted
 
 	data, err := os.ReadFile(filePath)
 	if err != nil {
-		return vault, err
+		return nil, err
 	}
 
 	err = json.Unmarshal(data, &vault)
 
-	return vault, err
+	return &vault, err
 }
 
-func (v Vault) String() string {
+func (v *Vault) String() string {
 	return fmt.Sprintf("Vault{ version: %v, header: %v, db: %v }", v.Version, v.Header, v.Db)
 }
 
-func (v VaultEncrypted) String() string {
+func (v *VaultEncrypted) String() string {
 	return fmt.Sprintf("Vault{ version: %v, header: %v, db: %v }", v.Version, v.Header, v.Db)
 }
 

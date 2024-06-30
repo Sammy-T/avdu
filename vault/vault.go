@@ -33,6 +33,7 @@ type Slot struct {
 	P         int
 	Salt      string
 	Repaired  bool
+	IsBackup  bool `json:"is_backup"`
 }
 
 type Params struct {
@@ -118,7 +119,7 @@ func (h Header) String() string {
 
 func (s Slot) String() string {
 	var outputFormat string = "Slot{ type: %v, uuid: %v, key: %v, keyParams: %v, "
-	outputFormat += "n: %v, r: %v, p: %v, salt: %v, repaired: %v }"
+	outputFormat += "n: %v, r: %v, p: %v, salt: %v, repaired: %v, isBackup: %v }"
 
 	var fields []interface{} = []interface{}{
 		s.Type,
@@ -130,6 +131,7 @@ func (s Slot) String() string {
 		s.P,
 		s.Salt,
 		s.Repaired,
+		s.IsBackup,
 	}
 
 	return fmt.Sprintf(outputFormat, fields...)

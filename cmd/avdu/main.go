@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/sammy-t/avdu/internal/vault"
+	"github.com/sammy-t/avdu/vault"
 )
 
 func main() {

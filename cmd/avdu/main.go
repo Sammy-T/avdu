@@ -10,11 +10,12 @@ import (
 )
 
 func main() {
-	readVault()
+	readVault("./test/data/aegis_plain.json")
+	readVaultEncrypted("./test/data/aegis_encrypted.json")
 }
 
-func readVault() {
-	data, err := os.ReadFile("./test/data/aegis_plain.json")
+func readVault(filePath string) {
+	data, err := os.ReadFile(filePath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -28,5 +29,23 @@ func readVault() {
 		log.Fatal(err)
 	}
 
-	log.Println(vault)
+	fmt.Println(vault)
+}
+
+func readVaultEncrypted(filePath string) {
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(string(data))
+
+	var vault vault.VaultEncrypted
+
+	err = json.Unmarshal(data, &vault)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(vault)
 }

@@ -10,6 +10,12 @@ type Vault struct {
 	Db      Db
 }
 
+type VaultEncrypted struct {
+	Version int
+	Header  Header
+	Db      string
+}
+
 type Header struct {
 	Slots  []Slot
 	Params Params
@@ -66,6 +72,10 @@ type Group struct {
 }
 
 func (v Vault) String() string {
+	return fmt.Sprintf("Vault{ version: %v, header: %v, db: %v }", v.Version, v.Header, v.Db)
+}
+
+func (v VaultEncrypted) String() string {
 	return fmt.Sprintf("Vault{ version: %v, header: %v, db: %v }", v.Version, v.Header, v.Db)
 }
 

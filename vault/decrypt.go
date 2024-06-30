@@ -5,6 +5,7 @@ import (
 	"crypto/cipher"
 	"encoding/base64"
 	"encoding/hex"
+	"encoding/json"
 	"errors"
 
 	"golang.org/x/crypto/scrypt"
@@ -114,4 +115,28 @@ func (vaultData *VaultEncrypted) DecryptContents(masterKey []byte) ([]byte, erro
 	}
 
 	return content, nil
+}
+
+// DecryptVault decrypts the vault's contents
+// and returns a plaintext version of the vault.
+func (vaultData *VaultEncrypted) DecryptVault(masterKey []byte) (*Vault, error) {
+	content, err := vaultData.DecryptContents(masterKey)
+	if err != nil {
+		return nil, err
+	}
+
+	var db Db
+
+	err = json.Unmarshal(content, &db)
+	if err != nil {
+		return nil, err
+	}
+
+	var vaultDataPlain Vault = Vault{
+		Version: vaultData.Version,
+		Header:  vaultData.Header,
+		Db:      db,
+	}
+
+	return &vaultDataPlain, nil
 }

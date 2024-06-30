@@ -32,5 +32,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Printf("Decrypted:\n\n%v", string(content))
+	log.Printf("Decrypted content:\n\n%v", string(content))
+
+	vaultDataPlain, err := vaultDataEnc.DecryptVault(masterKey)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Printf("Decrypted vault:\n\n%v", vaultDataPlain)
 }

@@ -46,7 +46,7 @@ func main() {
 
 	otps, err := avdu.GetOTPs(vaultDataPlain)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	var builder strings.Builder

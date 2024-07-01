@@ -51,6 +51,8 @@ func main() {
 
 	var builder strings.Builder
 
+	builder.WriteString("OTPs")
+
 	for _, entry := range vaultDataPlain.Db.Entries {
 		fmt.Fprintf(&builder, "\n%v [%v]\n%v\n", entry.Name, entry.Issuer, otps[entry.Uuid])
 	}

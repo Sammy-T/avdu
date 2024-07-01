@@ -121,7 +121,7 @@ func (s Slot) String() string {
 	var outputFormat string = "Slot{ type: %v, uuid: %v, key: %v, keyParams: %v, "
 	outputFormat += "n: %v, r: %v, p: %v, salt: %v, repaired: %v, isBackup: %v }"
 
-	var fields []interface{} = []interface{}{
+	var fields []any = []any{
 		s.Type,
 		s.Uuid,
 		s.Key,
@@ -150,7 +150,7 @@ func (e Entry) String() string {
 	outputFormat += "icon: %v, iconMime: %v, iconHash: %v, favorite: %v, "
 	outputFormat += "info: %v, groups: %v }"
 
-	var fields []interface{} = []interface{}{
+	var fields []any = []any{
 		e.Type,
 		e.Uuid,
 		e.Name,
@@ -170,7 +170,7 @@ func (e Entry) String() string {
 func (i Info) String() string {
 	var outputFormat string = "Info{ secret: %v, algo: %v, digits: %v, period: %v, counter: %v"
 
-	var fields []interface{} = []interface{}{i.Secret, i.Algo, i.Digits, i.Period, i.Counter}
+	var fields []any = []any{i.Secret, i.Algo, i.Digits, i.Period, i.Counter}
 
 	// If the pin is included, add it to the formatted output and field data
 	if i.Pin != "" {

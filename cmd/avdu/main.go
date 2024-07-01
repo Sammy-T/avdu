@@ -1,8 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"strings"
 
+	"github.com/sammy-t/avdu"
 	"github.com/sammy-t/avdu/vault"
 )
 
@@ -32,12 +35,25 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Printf("Decrypted content:\n\n%v", string(content))
+	log.Printf("Decrypted content:\n\n%v\n\n", string(content))
 
 	vaultDataPlain, err := vaultDataEnc.DecryptVault(masterKey)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Printf("Decrypted vault:\n\n%v", vaultDataPlain)
+	log.Printf("Decrypted vault:\n\n%v\n\n", vaultDataPlain)
+
+	otps, err := avdu.GetOTPs(vaultDataPlain)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var builder strings.Builder
+
+	for _, entry := range vaultDataPlain.Db.Entries {
+		fmt.Fprintf(&builder, "\n%v [%v]\n%v\n", entry.Name, entry.Issuer, otps[entry.Uuid])
+	}
+
+	log.Println(builder.String())
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/sammy-t/avdu"
@@ -14,8 +15,16 @@ import (
 
 func main() {
 	app := &cli.App{
-		Name:   "avdu",
-		Usage:  "Read an Aegis vault backup or export file.",
+		Name:  "avdu",
+		Usage: "Read an Aegis vault backup or export file.",
+		Flags: []cli.Flag{
+			&cli.PathFlag{
+				Name:    "path",
+				Aliases: []string{"p"},
+				Value:   ".",
+				Usage:   "the path to the vault file or directory",
+			},
+		},
 		Action: rootAction,
 	}
 
@@ -25,30 +34,31 @@ func main() {
 }
 
 func rootAction(ctx *cli.Context) error {
-	// const workingDir string = "."
-	const workingDir string = "./test/data/exports" //// TODO: TEMP
-	files, err := os.ReadDir(workingDir)
-	if err != nil || len(files) == 0 {
-		return err
-	}
+	var path string = ctx.Path("path")
 
-	vaultFile, err := vault.LastModified(files)
+	isFilePath, err := regexp.MatchString(`.json`, path)
 	if err != nil {
 		return err
 	}
 
-	if vaultFile == nil {
-		return errors.New("no vault backup or export file found")
+	var vaultPath string
+
+	if isFilePath {
+		vaultPath = path
+	} else {
+		vaultPath, err = findVaultPath(path)
 	}
 
-	var vaultPath string = fmt.Sprintf("%v/%v", workingDir, vaultFile.Name())
+	if err != nil {
+		return err
+	}
 
 	vaultData, err := vault.ReadVaultFile(vaultPath)
 	if err != nil {
-		return fmt.Errorf(`cannot read vault "%v"`, vaultFile.Name())
+		return fmt.Errorf(`cannot read vault "%v"`, vaultPath)
 	}
 
-	fmt.Printf("Read file %v\n", vaultFile.Name())
+	fmt.Printf("Read file %v\n", vaultPath)
 
 	otps, err := avdu.GetOTPs(vaultData)
 	if err != nil {
@@ -66,4 +76,28 @@ func rootAction(ctx *cli.Context) error {
 	fmt.Println(builder.String())
 
 	return nil
+}
+
+// findVaultPath is a helper that returns the most recently modified
+// vault's filepath.
+func findVaultPath(workingDir string) (string, error) {
+	var vaultPath string
+
+	files, err := os.ReadDir(workingDir)
+	if err != nil || len(files) == 0 {
+		return vaultPath, err
+	}
+
+	vaultFile, err := vault.LastModified(files)
+	if err != nil {
+		return vaultPath, err
+	}
+
+	if vaultFile == nil {
+		return vaultPath, errors.New("no vault backup or export file found")
+	}
+
+	vaultPath = fmt.Sprintf("%v/%v", workingDir, vaultFile.Name())
+
+	return vaultPath, nil
 }

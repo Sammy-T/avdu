@@ -1,61 +1,69 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/sammy-t/avdu"
 	"github.com/sammy-t/avdu/vault"
+	"github.com/urfave/cli/v2"
 )
 
 func main() {
-	vaultData, err := vault.ReadVaultFile("./test/data/aegis_plain.json")
-	if err != nil {
-		log.Fatal(err)
+	app := &cli.App{
+		Name:   "avdu",
+		Usage:  "Read an Aegis vault backup or export file.",
+		Action: rootAction,
 	}
 
-	vaultDataEnc, err := vault.ReadVaultFileEnc("./test/data/aegis_encrypted.json")
-	if err != nil {
+	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
 	}
+}
 
-	log.Printf("\n%v\n\n", vaultData)
-	log.Printf("\n%v\n\n", vaultDataEnc)
-
-	masterKey, err := vaultDataEnc.FindMasterKey("test")
-	if err != nil {
-		log.Fatal(err)
+func rootAction(ctx *cli.Context) error {
+	// const workingDir string = "."
+	const workingDir string = "./test/data/exports" //// TODO: TEMP
+	files, err := os.ReadDir(workingDir)
+	if err != nil || len(files) == 0 {
+		return err
 	}
 
-	log.Printf("Found master key: %v", masterKey)
-
-	content, err := vaultDataEnc.DecryptContents(masterKey)
+	vaultFile, err := vault.LastModified(files)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
-	log.Printf("Decrypted content:\n\n%v\n\n", string(content))
-
-	vaultDataPlain, err := vaultDataEnc.DecryptVault(masterKey)
-	if err != nil {
-		log.Fatal(err)
+	if vaultFile == nil {
+		return errors.New("no vault backup or export file found")
 	}
 
-	log.Printf("Decrypted vault:\n\n%v\n\n", vaultDataPlain)
+	var vaultPath string = fmt.Sprintf("%v/%v", workingDir, vaultFile.Name())
 
-	otps, err := avdu.GetOTPs(vaultDataPlain)
+	vaultData, err := vault.ReadVaultFile(vaultPath)
+	if err != nil {
+		return fmt.Errorf(`cannot read vault "%v"`, vaultFile.Name())
+	}
+
+	fmt.Printf("Read file %v\n", vaultFile.Name())
+
+	otps, err := avdu.GetOTPs(vaultData)
 	if err != nil {
 		log.Println(err)
 	}
 
 	var builder strings.Builder
 
-	builder.WriteString("OTPs")
+	builder.WriteString("\n- OTPs -\n")
 
-	for _, entry := range vaultDataPlain.Db.Entries {
-		fmt.Fprintf(&builder, "\n%v [%v]\n%v\n", entry.Name, entry.Issuer, otps[entry.Uuid])
+	for _, entry := range vaultData.Db.Entries {
+		fmt.Fprintf(&builder, "\n%v (%v)\n%v\n", entry.Issuer, entry.Name, otps[entry.Uuid])
 	}
 
-	log.Println(builder.String())
+	fmt.Println(builder.String())
+
+	return nil
 }

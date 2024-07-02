@@ -1,9 +1,7 @@
 package vault
 
 import (
-	"encoding/json"
 	"fmt"
-	"os"
 )
 
 type Vault struct {
@@ -73,36 +71,6 @@ type Info struct {
 type Group struct {
 	Uuid string
 	Name string
-}
-
-// ReadVaultFile parses the json file at the path
-// and returns a vault.
-func ReadVaultFile(filePath string) (*Vault, error) {
-	var vault Vault
-
-	data, err := os.ReadFile(filePath)
-	if err != nil {
-		return nil, err
-	}
-
-	err = json.Unmarshal(data, &vault)
-
-	return &vault, err
-}
-
-// ReadVaultFileEnc parses the json file at the path
-// and returns an encrypted vault.
-func ReadVaultFileEnc(filePath string) (*VaultEncrypted, error) {
-	var vault VaultEncrypted
-
-	data, err := os.ReadFile(filePath)
-	if err != nil {
-		return nil, err
-	}
-
-	err = json.Unmarshal(data, &vault)
-
-	return &vault, err
 }
 
 func (v *Vault) String() string {

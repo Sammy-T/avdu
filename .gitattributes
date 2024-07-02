@@ -5,8 +5,9 @@
 *.go              text diff=golang
 *.json            text
 
-# Go module file
+# Go module files
 *.mod             text eol=lf
+*.sum             text eol=lf
 
 # Documentation
 *.markdown        text diff=markdown

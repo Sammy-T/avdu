@@ -8,7 +8,7 @@ import (
 )
 
 // ReadVaultFile parses the json file at the path
-// and returns a vault.
+// and returns a plaintext vault.
 func ReadVaultFile(filePath string) (*Vault, error) {
 	var vault Vault
 
@@ -35,6 +35,27 @@ func ReadVaultFileEnc(filePath string) (*VaultEncrypted, error) {
 	err = json.Unmarshal(data, &vault)
 
 	return &vault, err
+}
+
+// ReadAndDecryptVaultFile parses the json file at the path,
+// decrypts the vault content, and returns a plaintext vault.
+func ReadAndDecryptVaultFile(filePath string, pwd string) (*Vault, error) {
+	vaultDataEnc, err := ReadVaultFileEnc(filePath)
+	if err != nil {
+		return nil, err
+	}
+
+	masterKey, err := vaultDataEnc.FindMasterKey(pwd)
+	if err != nil {
+		return nil, err
+	}
+
+	vaultDataPlain, err := vaultDataEnc.DecryptVault(masterKey)
+	if err != nil {
+		return nil, err
+	}
+
+	return vaultDataPlain, nil
 }
 
 // LastModified finds the most recent vault file.

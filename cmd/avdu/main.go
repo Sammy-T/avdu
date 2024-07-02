@@ -21,8 +21,13 @@ func main() {
 			&cli.PathFlag{
 				Name:    "path",
 				Aliases: []string{"p"},
+				Usage:   "specify the path to the vault file or directory",
 				Value:   ".",
-				Usage:   "the path to the vault file or directory",
+			},
+			&cli.StringFlag{
+				Name:    "pass",
+				Aliases: []string{"pwd", "k"},
+				Usage:   "specify the password used to decrypt the vault",
 			},
 		},
 		Action: rootAction,
@@ -53,12 +58,21 @@ func rootAction(ctx *cli.Context) error {
 		return err
 	}
 
-	vaultData, err := vault.ReadVaultFile(vaultPath)
+	var pwd string = ctx.String("pass")
+
+	var vaultData *vault.Vault
+
+	if pwd == "" {
+		vaultData, err = vault.ReadVaultFile(vaultPath)
+	} else {
+		vaultData, err = vault.ReadAndDecryptVaultFile(vaultPath, pwd)
+	}
+
 	if err != nil {
 		return fmt.Errorf(`cannot read vault "%v"`, vaultPath)
 	}
 
-	fmt.Printf("Read file %v\n", vaultPath)
+	fmt.Printf("Read file: %v\n", vaultPath)
 
 	otps, err := avdu.GetOTPs(vaultData)
 	if err != nil {

@@ -7,11 +7,14 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/sammy-t/avdu"
 	"github.com/sammy-t/avdu/vault"
 	"github.com/urfave/cli/v2"
 )
+
+const timeFmt string = "2006/01/02 15:04:05"
 
 func main() {
 	app := &cli.App{
@@ -72,7 +75,7 @@ func rootAction(ctx *cli.Context) error {
 		return fmt.Errorf(`cannot read vault "%v"`, vaultPath)
 	}
 
-	fmt.Printf("Read file: %v\n", vaultPath)
+	fmt.Printf("%v Read file: %v\n", time.Now().Format(timeFmt), vaultPath)
 
 	otps, err := avdu.GetOTPs(vaultData)
 	if err != nil {
@@ -87,17 +90,17 @@ func rootAction(ctx *cli.Context) error {
 		fmt.Fprintf(&builder, "\n%v (%v)\n%v\n", entry.Issuer, entry.Name, otps[entry.Uuid])
 	}
 
-	fmt.Println(builder.String())
+	fmt.Printf("%v %v\n", time.Now().Format(timeFmt), builder.String())
 
 	return nil
 }
 
 // findVaultPath is a helper that returns the most recently modified
 // vault's filepath.
-func findVaultPath(workingDir string) (string, error) {
+func findVaultPath(vaultDir string) (string, error) {
 	var vaultPath string
 
-	files, err := os.ReadDir(workingDir)
+	files, err := os.ReadDir(vaultDir)
 	if err != nil || len(files) == 0 {
 		return vaultPath, err
 	}
@@ -111,7 +114,7 @@ func findVaultPath(workingDir string) (string, error) {
 		return vaultPath, errors.New("no vault backup or export file found")
 	}
 
-	vaultPath = fmt.Sprintf("%v/%v", workingDir, vaultFile.Name())
+	vaultPath = fmt.Sprintf("%v/%v", vaultDir, vaultFile.Name())
 
 	return vaultPath, nil
 }

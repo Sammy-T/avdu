@@ -23,7 +23,7 @@ var refreshes int
 func main() {
 	app := &cli.App{
 		Name:    "avdu",
-		Usage:   "Read an Aegis vault backup or export file.",
+		Usage:   "Generate one-time passwords from an Aegis vault backup or export file.",
 		Version: "0.1.0",
 		Flags: []cli.Flag{
 			&cli.PathFlag{
@@ -40,7 +40,7 @@ func main() {
 			&cli.BoolFlag{
 				Name:    "refresh",
 				Aliases: []string{"r"},
-				Usage:   "automatically refreshes the OTP display",
+				Usage:   "automatically refreshes the OTP display [experimental]",
 			},
 		},
 		Action: cliAction,

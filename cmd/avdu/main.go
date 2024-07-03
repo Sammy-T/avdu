@@ -91,6 +91,10 @@ func cliAction(ctx *cli.Context) error {
 
 	var refresh bool = ctx.Bool("refresh")
 
+	if !refresh {
+		fmt.Printf("OTPs valid for %vs\n", float32(getTTN())/1000)
+	}
+
 	var ch chan int = make(chan int)
 
 	for refresh && refreshes < refreshLimit {
@@ -127,15 +131,12 @@ func displayOTPs(vaultData *vault.Vault) {
 // displayCountdown is a helper that outputs a countdown to the same line
 // then transmits data to the channel when the coundown finishes.
 func displayCountdown(ch chan int) {
-	var p int64 = defPeriod * 1000
-
-	// Calculate the time til next refresh
-	var ttn int64 = p - (time.Now().UnixMilli() % p)
+	var ttn int64 = getTTN()
 
 	for ttn > 1000 {
 		fmt.Printf("\rRefreshes in %vs ", float32(ttn)/1000)
 
-		ttn = p - (time.Now().UnixMilli() % p)
+		ttn = getTTN()
 
 		time.Sleep(1 * time.Second)
 	}
@@ -143,6 +144,13 @@ func displayCountdown(ch chan int) {
 	fmt.Println() // Ensure there's a fresh line for additional output
 
 	ch <- 0 // Return arbitrary data to free up the channel
+}
+
+func getTTN() int64 {
+	var p int64 = defPeriod * 1000
+
+	// Calculate the time til next refresh
+	return p - (time.Now().UnixMilli() % p)
 }
 
 // findVaultPath is a helper that returns the most recently modified

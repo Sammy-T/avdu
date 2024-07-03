@@ -17,7 +17,9 @@ go build -C ./cmd/avdu
 ```
 
 > [!CAUTION]
-> Command Prompt does not persist command history after the terminal window is closed.
+> Some terminals persist command history after the terminal window is closed.
 >
-> Other terminals should have their command history cleared when the cli is used
-> with the password flag.
+> It's advisable to clear the command history when the cli is used with the password flag.
+>
+> Command Prompt doesn't require clearing since it doesn't persist command history 
+> after the terminal window is closed.

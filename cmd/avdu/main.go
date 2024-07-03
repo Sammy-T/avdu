@@ -16,9 +16,9 @@ import (
 
 const timeFmt string = "2006/01/02 15:04:05"
 const defPeriod int64 = 30 // The default TOTP refresh interval
-const refreshLimit int = 50
+const refreshLimit int = 10
 
-var refreshed int
+var refreshes int
 
 func main() {
 	app := &cli.App{
@@ -89,14 +89,18 @@ func cliAction(ctx *cli.Context) error {
 
 	displayOTPs(vaultData)
 
+	var refresh bool = ctx.Bool("refresh")
+
 	var ch chan int = make(chan int)
 
-	for ctx.Bool("refresh") && refreshed < refreshLimit {
+	for refresh && refreshes < refreshLimit {
 		go displayCountdown(ch)
 		<-ch // Block progression by waiting to receive data on the channel
 
 		log.Println("Refreshed OTPs")
 		displayOTPs(vaultData)
+
+		refreshes++
 	}
 
 	return nil

@@ -25,7 +25,14 @@ avdu -h
 ### Run the CLI
 
 ```bash
+# Run in the current directory
 go run ./cmd/avdu
+
+# Run using the plaintext test file
+go run ./cmd/avdu -p test/data/aegis_plain.json
+
+# Run using the encrypted test file
+go run ./cmd/avdu -p test/data/aegis_encrypted.json -k test
 ```
 
 ### Build the CLI

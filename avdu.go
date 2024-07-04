@@ -22,6 +22,8 @@ func GetOTP(entry vault.Entry) (otp.OTP, error) {
 		pass, err = otp.GenerateTOTP(secretData, entry.Info.Algo, entry.Info.Digits, int64(entry.Info.Period))
 	case "hotp":
 		pass = otp.HOTP{}
+	case "steam":
+		pass, err = otp.GenerateSteamOTP(secretData, entry.Info.Algo, entry.Info.Digits, int64(entry.Info.Period))
 	default:
 		err = fmt.Errorf("unsupported otp type \"%v\"", entry.Type)
 	}

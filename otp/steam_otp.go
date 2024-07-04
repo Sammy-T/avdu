@@ -24,16 +24,16 @@ func (sotp SteamOTP) String() string {
 	var steamAlphabet []rune = []rune(steamAlpha)
 	var alphabetLen int = len(steamAlphabet)
 
-	var codeInt int = int(sotp.code)
+	var code int = int(sotp.code)
 
 	var builder strings.Builder
 
 	for i := 0; i < sotp.digits; i++ {
-		var char rune = steamAlphabet[codeInt%alphabetLen]
+		var char rune = steamAlphabet[code%alphabetLen]
 
 		builder.WriteRune(char)
 
-		codeInt /= alphabetLen
+		code /= alphabetLen
 	}
 
 	return builder.String()

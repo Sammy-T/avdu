@@ -1,13 +1,7 @@
 package otp
 
 import (
-	"crypto/hmac"
-	"crypto/sha1"
-	"crypto/sha256"
-	"crypto/sha512"
-	"encoding/binary"
 	"fmt"
-	"hash"
 	"math"
 	"time"
 )
@@ -26,12 +20,12 @@ func (totp TOTP) GetDigits() int {
 }
 
 func (totp TOTP) String() string {
-	var codeInt int = int(totp.code % int64(math.Pow10(totp.digits)))
+	var code int = int(totp.code % int64(math.Pow10(totp.digits)))
 
 	// Create a dynamic format to pad with zeroes up to the digit length. ex. %05d
 	var codeFormat string = fmt.Sprintf("%%0%dd", totp.digits)
 
-	return fmt.Sprintf(codeFormat, codeInt)
+	return fmt.Sprintf(codeFormat, code)
 }
 
 // Generates a TOTP for the current time
@@ -59,36 +53,4 @@ func GenerateTOTPAt(secret []byte, algo string, digits int, period int64, second
 		(int(secretHash[offset+3]) & 0xff))
 
 	return TOTP{code: otp, digits: digits}, nil
-}
-
-// getHash hashes the counter using the secret and specified algo
-// then returns the hash.
-func getHash(secret []byte, algo string, counter int64) ([]byte, error) {
-	var counterBytes []byte = make([]byte, 8)
-
-	// Encode counter in big endian
-	binary.BigEndian.PutUint64(counterBytes, uint64(counter))
-
-	var mac hash.Hash
-
-	// Use the specified algorithm
-	switch algo {
-	case "SHA1":
-		mac = hmac.New(sha1.New, secret)
-	case "SHA256":
-		mac = hmac.New(sha256.New, secret)
-	case "SHA512":
-		mac = hmac.New(sha512.New, secret)
-	default:
-		return nil, fmt.Errorf(`unsupported algo "%v"`, algo)
-	}
-
-	// Calculate the hash of the counter
-	_, err := mac.Write(counterBytes)
-	if err != nil {
-		return nil, err
-	}
-
-	// Returned the hashed result
-	return mac.Sum(nil), nil
 }

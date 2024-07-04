@@ -2,6 +2,7 @@ package avdu
 
 import (
 	"encoding/base32"
+	"encoding/hex"
 	"fmt"
 
 	"github.com/sammy-t/avdu/otp"
@@ -25,6 +26,11 @@ func GetOTP(entry vault.Entry) (otp.OTP, error) {
 	case "steam":
 		pass, err = otp.GenerateSteamOTP(secretData, entry.Info.Algo, entry.Info.Digits, int64(entry.Info.Period))
 	case "motp":
+		secretData, err = hex.DecodeString(entry.Info.Secret)
+		if err != nil {
+			return nil, err
+		}
+
 		pass, err = otp.GenerateMOTP(secretData, entry.Info.Algo, entry.Info.Digits, int64(entry.Info.Period), entry.Info.Pin)
 	default:
 		err = fmt.Errorf(`unsupported otp type "%v"`, entry.Type)

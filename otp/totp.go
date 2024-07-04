@@ -6,7 +6,6 @@ import (
 	"crypto/sha256"
 	"crypto/sha512"
 	"encoding/binary"
-	"errors"
 	"fmt"
 	"hash"
 	"math"
@@ -81,7 +80,7 @@ func getHash(secret []byte, algo string, counter int64) ([]byte, error) {
 	case "SHA512":
 		mac = hmac.New(sha512.New, secret)
 	default:
-		return nil, errors.New("unsupported algo")
+		return nil, fmt.Errorf(`unsupported algo "%v"`, algo)
 	}
 
 	// Calculate the hash of the counter

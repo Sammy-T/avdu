@@ -1,6 +1,6 @@
 # avdu
 
-Aegis Vault Desktop Utility is a Go package and basic command line interface for generating 
+Aegis Vault Desktop Utility is a Go module and basic command line interface for generating 
 one-time passwords from an [Aegis](https://github.com/beemdevelopment/Aegis) vault backup or export file.
 
 > [!NOTE]

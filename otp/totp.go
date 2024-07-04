@@ -44,7 +44,7 @@ func GenerateTOTP(secret []byte, algo string, digits int, period int64) (TOTP, e
 func GenerateTOTPAt(secret []byte, algo string, digits int, period int64, seconds int64) (TOTP, error) {
 	var counter int64 = int64(math.Floor(float64(seconds) / float64(period)))
 
-	secretHash, err := GetHash(secret, algo, counter)
+	secretHash, err := getHash(secret, algo, counter)
 	if err != nil {
 		return TOTP{}, err
 	}
@@ -62,9 +62,9 @@ func GenerateTOTPAt(secret []byte, algo string, digits int, period int64, second
 	return TOTP{code: otp, digits: digits}, nil
 }
 
-// GetHash hashes the counter using the secret and specified algo
-// and returns the hash.
-func GetHash(secret []byte, algo string, counter int64) ([]byte, error) {
+// getHash hashes the counter using the secret and specified algo
+// then returns the hash.
+func getHash(secret []byte, algo string, counter int64) ([]byte, error) {
 	var counterBytes []byte = make([]byte, 8)
 
 	// Encode counter in big endian

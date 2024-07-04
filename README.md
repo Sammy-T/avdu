@@ -1,25 +1,43 @@
 # avdu
 
-Aegis Vault Desktop Utility (WIP)
+Aegis Vault Desktop Utility is a Go package and basic command line interface for generating 
+one-time passwords from an [Aegis](https://github.com/beemdevelopment/Aegis) vault backup or export file.
 
-## Run dev app
+> [!NOTE]
+> - HOTP is not implemented due to syncing concerns.
+> - Steam OTP is implemented but untested.
 
-```bash
-go run ./cmd/avdu
-```
-
-## Build
-
-Build the command binary to the same directory.
+## CLI
 
 ```bash
-go build -C ./cmd/avdu
+avdu -h
 ```
 
 > [!CAUTION]
 > Some terminals persist command history after the terminal window is closed.
 >
-> It's advisable to clear the command history when the cli is used with the password flag.
+> It's advisable to clear the command history when the CLI is used with the password flag.
 >
-> Command Prompt doesn't require clearing since it doesn't persist command history 
-> after the terminal window is closed.
+> Command Prompt doesn't require clearing since it doesn't persist command history after closing.
+
+## Development
+
+### Run the CLI
+
+```bash
+go run ./cmd/avdu
+```
+
+### Build the CLI
+
+```bash
+go build -C ./cmd/avdu
+```
+
+The binary will output to the `cmd/avdu/` directory.
+
+### Install the CLI
+
+```bash
+go install ./cmd/avdu
+```

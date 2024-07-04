@@ -17,5 +17,5 @@ func (hotp HOTP) GetDigits() int {
 }
 
 func (hotp HOTP) String() string {
-	return "0"
+	return "<!HOTP>"
 }

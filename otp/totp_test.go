@@ -2,7 +2,6 @@ package otp_test
 
 import (
 	"fmt"
-	"log"
 	"testing"
 
 	"github.com/sammy-t/avdu/otp"
@@ -14,7 +13,7 @@ type vectorTOTP struct {
 	otp  string
 }
 
-var vectors []vectorTOTP = []vectorTOTP{
+var vectorsTOTP []vectorTOTP = []vectorTOTP{
 	{time: 59, algo: "SHA1", otp: "94287082"},
 	{time: 59, algo: "SHA256", otp: "46119246"},
 	{time: 59, algo: "SHA512", otp: "90693936"},
@@ -55,8 +54,8 @@ var seed64 []byte = []byte{
 }
 
 func TestTOTP(t *testing.T) {
-	for i, vector := range vectors {
-		s := getSeed(vector.algo)
+	for i, vector := range vectorsTOTP {
+		s := getSeed(t, vector.algo)
 
 		totp, err := otp.GenerateTOTPAt(s, vector.algo, 8, 30, vector.time)
 
@@ -66,7 +65,7 @@ func TestTOTP(t *testing.T) {
 	}
 }
 
-func getSeed(algo string) []byte {
+func getSeed(t *testing.T, algo string) []byte {
 	var s []byte
 
 	switch algo {
@@ -77,7 +76,7 @@ func getSeed(algo string) []byte {
 	case "SHA512":
 		s = seed64
 	default:
-		log.Fatal(fmt.Errorf(`unsupported algo "%v"`, algo))
+		t.Fatal(fmt.Errorf(`unsupported algo "%v"`, algo))
 	}
 
 	return s

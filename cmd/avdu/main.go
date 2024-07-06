@@ -82,7 +82,7 @@ func cliAction(ctx *cli.Context) error {
 	}
 
 	if err != nil {
-		return fmt.Errorf(`cannot read vault "%v"`, vaultPath)
+		return fmt.Errorf("cannot read vault %q: %w", vaultPath, err)
 	}
 
 	fmt.Printf("%v Read file: %v\n", time.Now().Format(timeFmt), vaultPath)

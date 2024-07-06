@@ -60,7 +60,7 @@ func TestTOTP(t *testing.T) {
 		totp, err := otp.GenerateTOTPAt(s, vector.algo, 8, 30, vector.time)
 
 		if err != nil || totp.String() != vector.otp {
-			t.Fatalf(`[%v] GenerateTOTPAt() = %v, %v, want match for %v, nil`, i, totp, err, vector.otp)
+			t.Fatalf("[%v] GenerateTOTPAt() = %v, %v; want match for %v, nil", i, totp, err, vector.otp)
 		}
 	}
 }
@@ -76,7 +76,7 @@ func getSeed(t *testing.T, algo string) []byte {
 	case "SHA512":
 		s = seed64
 	default:
-		t.Fatal(fmt.Errorf(`unsupported algo "%v"`, algo))
+		t.Fatal(fmt.Errorf("unsupported algo %q", algo))
 	}
 
 	return s

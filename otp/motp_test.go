@@ -33,7 +33,7 @@ func TestMOTP(t *testing.T) {
 		motp, err := otp.GenerateMOTPAt(s, "MD5", 6, 10, vector.pin, vector.time)
 
 		if err != nil || motp.String() != vector.otp {
-			t.Fatalf(`[%v] GenerateMOTPAt() = %v, %v, want match for %v, nil`, i, motp, err, vector.otp)
+			t.Fatalf("[%v] GenerateMOTPAt() = %v, %v; want match for %v, nil", i, motp, err, vector.otp)
 		}
 	}
 }

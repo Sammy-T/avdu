@@ -38,7 +38,7 @@ func getHash(secret []byte, algo string, counter int64) ([]byte, error) {
 	case "MD5":
 		mac = hmac.New(md5.New, secret)
 	default:
-		return nil, fmt.Errorf(`unsupported algo "%v"`, algo)
+		return nil, fmt.Errorf("unsupported algo %q", algo)
 	}
 
 	// Calculate the hash of the counter
@@ -67,7 +67,7 @@ func getDigest(algo string, toDigest []byte) ([]byte, error) {
 	case "MD5":
 		md = md5.New()
 	default:
-		return nil, fmt.Errorf(`unsupported algo "%v"`, algo)
+		return nil, fmt.Errorf("unsupported algo %q", algo)
 	}
 
 	// Calculate the hash

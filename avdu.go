@@ -4,6 +4,7 @@ import (
 	"encoding/base32"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/fs"
 	"os"
@@ -15,6 +16,30 @@ import (
 )
 
 const defPeriod int64 = 30 // The default TOTP refresh interval
+
+// FindVaultPath returns the most recently modified
+// vault's filepath.
+func FindVaultPath(vaultDir string) (string, error) {
+	var vaultPath string
+
+	files, err := os.ReadDir(vaultDir)
+	if err != nil || len(files) == 0 {
+		return vaultPath, err
+	}
+
+	vaultFile, err := LastModified(files)
+	if err != nil {
+		return vaultPath, err
+	}
+
+	if vaultFile == nil {
+		return vaultPath, errors.New("no vault backup or export file found")
+	}
+
+	vaultPath = fmt.Sprintf("%v/%v", vaultDir, vaultFile.Name())
+
+	return vaultPath, nil
+}
 
 // ReadVaultFile parses the json file at the path
 // and returns a plaintext vault.

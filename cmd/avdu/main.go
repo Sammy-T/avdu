@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -63,7 +62,7 @@ func cliAction(ctx *cli.Context) error {
 	if isFilePath {
 		vaultPath = path
 	} else {
-		vaultPath, err = findVaultPath(path)
+		vaultPath, err = avdu.FindVaultPath(path)
 	}
 
 	if err != nil {
@@ -143,28 +142,4 @@ func displayCountdown(ch chan int) {
 	fmt.Println() // Ensure there's a fresh line for additional output
 
 	ch <- 0 // Return arbitrary data to free up the channel
-}
-
-// findVaultPath is a helper that returns the most recently modified
-// vault's filepath.
-func findVaultPath(vaultDir string) (string, error) {
-	var vaultPath string
-
-	files, err := os.ReadDir(vaultDir)
-	if err != nil || len(files) == 0 {
-		return vaultPath, err
-	}
-
-	vaultFile, err := avdu.LastModified(files)
-	if err != nil {
-		return vaultPath, err
-	}
-
-	if vaultFile == nil {
-		return vaultPath, errors.New("no vault backup or export file found")
-	}
-
-	vaultPath = fmt.Sprintf("%v/%v", vaultDir, vaultFile.Name())
-
-	return vaultPath, nil
 }

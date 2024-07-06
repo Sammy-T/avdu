@@ -76,9 +76,9 @@ func cliAction(ctx *cli.Context) error {
 	var vaultData *vault.Vault
 
 	if pwd == "" {
-		vaultData, err = vault.ReadVaultFile(vaultPath)
+		vaultData, err = avdu.ReadVaultFile(vaultPath)
 	} else {
-		vaultData, err = vault.ReadAndDecryptVaultFile(vaultPath, pwd)
+		vaultData, err = avdu.ReadAndDecryptVaultFile(vaultPath, pwd)
 	}
 
 	if err != nil {
@@ -163,7 +163,7 @@ func findVaultPath(vaultDir string) (string, error) {
 		return vaultPath, err
 	}
 
-	vaultFile, err := vault.LastModified(files)
+	vaultFile, err := avdu.LastModified(files)
 	if err != nil {
 		return vaultPath, err
 	}

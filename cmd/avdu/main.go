@@ -15,7 +15,6 @@ import (
 )
 
 const timeFmt string = "2006/01/02 15:04:05"
-const defPeriod int64 = 30 // The default TOTP refresh interval
 const refreshLimit int = 10
 
 var refreshes int
@@ -92,7 +91,7 @@ func cliAction(ctx *cli.Context) error {
 	var refresh bool = ctx.Bool("refresh")
 
 	if !refresh {
-		fmt.Printf("OTPs valid for %vs\n", float32(getTTN())/1000)
+		fmt.Printf("OTPs valid for %vs\n", float32(avdu.GetTTN())/1000)
 	}
 
 	var ch chan int = make(chan int)
@@ -131,12 +130,12 @@ func displayOTPs(vaultData *vault.Vault) {
 // displayCountdown is a helper that outputs a countdown to the same line
 // then transmits data to the channel when the coundown finishes.
 func displayCountdown(ch chan int) {
-	var ttn int64 = getTTN()
+	var ttn int64 = avdu.GetTTN()
 
 	for ttn > 1000 {
-		fmt.Printf("\rRefreshes in %vs ", float32(ttn)/1000)
+		ttn = avdu.GetTTN()
 
-		ttn = getTTN()
+		fmt.Printf("\rRefreshes in %vs ", float32(ttn)/1000)
 
 		time.Sleep(1 * time.Second)
 	}
@@ -144,13 +143,6 @@ func displayCountdown(ch chan int) {
 	fmt.Println() // Ensure there's a fresh line for additional output
 
 	ch <- 0 // Return arbitrary data to free up the channel
-}
-
-func getTTN() int64 {
-	var p int64 = defPeriod * 1000
-
-	// Calculate the time til next refresh
-	return p - (time.Now().UnixMilli() % p)
 }
 
 // findVaultPath is a helper that returns the most recently modified

@@ -8,10 +8,13 @@ import (
 	"io/fs"
 	"os"
 	"regexp"
+	"time"
 
 	"github.com/sammy-t/avdu/otp"
 	"github.com/sammy-t/avdu/vault"
 )
+
+const defPeriod int64 = 30 // The default TOTP refresh interval
 
 // ReadVaultFile parses the json file at the path
 // and returns a plaintext vault.
@@ -162,4 +165,16 @@ func GetOTPs(vaultData *vault.Vault) (map[string]otp.OTP, error) {
 	}
 
 	return otps, err
+}
+
+// GetTTN calculates the time until the next OTP refresh using the default period.
+func GetTTN() int64 {
+	return GetTTNPer(defPeriod)
+}
+
+// GetTTNPer calculates the time until the next OTP refresh using the provided period.
+func GetTTNPer(period int64) int64 {
+	var p int64 = period * 1000
+
+	return p - (time.Now().UnixMilli() % p)
 }

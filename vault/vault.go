@@ -5,72 +5,72 @@ import (
 )
 
 type Vault struct {
-	Version int
-	Header  Header
-	Db      Db
+	Version int    `json:"version"`
+	Header  Header `json:"header"`
+	Db      Db     `json:"db"`
 }
 
 type VaultEncrypted struct {
-	Version int
-	Header  Header
-	Db      string
+	Version int    `json:"version"`
+	Header  Header `json:"header"`
+	Db      string `json:"db"`
 }
 
 type Header struct {
-	Slots  []Slot
-	Params Params
+	Slots  []Slot `json:"slots"`
+	Params Params `json:"params"`
 }
 
 type Slot struct {
-	Type      int
-	Uuid      string
-	Key       string
+	Type      int    `json:"type"`
+	Uuid      string `json:"uuid"`
+	Key       string `json:"key"`
 	KeyParams Params `json:"key_params"`
-	N         int
-	R         int
-	P         int
-	Salt      string
-	Repaired  bool
-	IsBackup  bool `json:"is_backup"`
+	N         int    `json:"n"`
+	R         int    `json:"r"`
+	P         int    `json:"p"`
+	Salt      string `json:"salt"`
+	Repaired  bool   `json:"repaired"`
+	IsBackup  bool   `json:"is_backup"`
 }
 
 type Params struct {
-	Nonce string
-	Tag   string
+	Nonce string `json:"nonce"`
+	Tag   string `json:"tag"`
 }
 
 type Db struct {
-	Version int
-	Entries []Entry
-	Groups  []Group
+	Version int     `json:"version"`
+	Entries []Entry `json:"entries"`
+	Groups  []Group `json:"groups"`
 }
 
 type Entry struct {
-	Type     string
-	Uuid     string
-	Name     string
-	Issuer   string
-	Note     string
-	Icon     string
-	IconMime string `json:"icon_mime"`
-	IconHash string `json:"icon_hash"`
-	Favorite bool
-	Info     Info
-	Groups   []string
+	Type     string   `json:"type"`
+	Uuid     string   `json:"uuid"`
+	Name     string   `json:"name"`
+	Issuer   string   `json:"issuer"`
+	Note     string   `json:"note"`
+	Icon     string   `json:"icon"`
+	IconMime string   `json:"icon_mime"`
+	IconHash string   `json:"icon_hash"`
+	Favorite bool     `json:"favorite"`
+	Info     Info     `json:"info"`
+	Groups   []string `json:"groups"`
 }
 
 type Info struct {
-	Secret  string
-	Algo    string
-	Digits  int
-	Period  int
-	Counter int
-	Pin     string
+	Secret  string `json:"secret"`
+	Algo    string `json:"algo"`
+	Digits  int    `json:"digits"`
+	Period  int    `json:"period,omitempty"`
+	Counter int    `json:"counter,omitempty"`
+	Pin     string `json:"pin,omitempty"`
 }
 
 type Group struct {
-	Uuid string
-	Name string
+	Uuid string `json:"uuid"`
+	Name string `json:"name"`
 }
 
 func (v *Vault) String() string {

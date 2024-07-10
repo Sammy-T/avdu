@@ -4,7 +4,7 @@ go 1.22.4
 
 require (
 	github.com/urfave/cli/v2 v2.27.2
-	golang.org/x/crypto v0.24.0
+	golang.org/x/crypto v0.25.0
 )
 
 require (

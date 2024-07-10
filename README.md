@@ -19,6 +19,20 @@ avdu -h
 >
 > Command Prompt doesn't require clearing since it doesn't persist command history after closing.
 
+## Import the module
+
+Import into go file(s)
+
+```go
+import "github.com/sammy-t/avdu"
+```
+
+Update modules
+
+```bash
+go mod tidy
+```
+
 ## Development
 
 ### Run the CLI

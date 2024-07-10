@@ -91,18 +91,14 @@ func cliAction(ctx *cli.Context) error {
 
 	if !refresh {
 		fmt.Printf("OTPs valid for %vs\n", float32(avdu.GetTTN())/1000)
-	}
+	} else {
+		var ch chan int = make(chan int)
 
-	var ch chan int = make(chan int)
+		go countdownOTPs(vaultData, ch)
 
-	for refresh && refreshes < refreshLimit {
-		go displayCountdown(ch)
-		<-ch // Block progression by waiting to receive data on the channel
-
-		log.Println("Refreshed OTPs")
-		displayOTPs(vaultData)
-
-		refreshes++
+		// Block progression by waiting to receive data on the channel.
+		// (This isn't necessary if I remove the goroutine but I'll keep it.)
+		<-ch
 	}
 
 	return nil
@@ -126,20 +122,27 @@ func displayOTPs(vaultData *vault.Vault) {
 	fmt.Printf("%v %v\n", time.Now().Format(timeFmt), builder.String())
 }
 
-// displayCountdown is a helper that outputs a countdown to the same line
-// then transmits data to the channel when the coundown finishes.
-func displayCountdown(ch chan int) {
-	var ttn int64 = avdu.GetTTN()
+// countdownOTPs outputs a countdown and displays the current OTPs
+// after each countdown reset.
+func countdownOTPs(vaultData *vault.Vault, ch chan int) {
+	displayOTPs(vaultData)
 
-	for ttn > 1000 {
-		ttn = avdu.GetTTN()
+	for refreshes < refreshLimit {
+		ttn := avdu.GetTTN()
 
+		if ttn > 29000 {
+			fmt.Println() // Ensure there's a fresh line
+
+			displayOTPs(vaultData)
+
+			refreshes++
+		}
+
+		// Use `\r` to display the countdown on the same line
 		fmt.Printf("\rRefreshes in %vs ", float32(ttn)/1000)
 
 		time.Sleep(1 * time.Second)
 	}
-
-	fmt.Println() // Ensure there's a fresh line for additional output
 
 	ch <- 0 // Return arbitrary data to free up the channel
 }

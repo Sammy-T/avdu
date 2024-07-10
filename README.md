@@ -3,6 +3,8 @@
 Aegis Vault Desktop Utility is a Go module and basic command line interface for generating 
 one-time passwords from an [Aegis](https://github.com/beemdevelopment/Aegis) vault's backup or export file.
 
+The desktop app version can be found at <https://github.com/Sammy-T/avda>.
+
 > [!NOTE]
 > - HOTP is not implemented due to syncing concerns.
 

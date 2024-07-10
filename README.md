@@ -5,7 +5,6 @@ one-time passwords from an [Aegis](https://github.com/beemdevelopment/Aegis) vau
 
 > [!NOTE]
 > - HOTP is not implemented due to syncing concerns.
-> - Steam OTP is implemented but untested.
 
 ## CLI
 

@@ -161,6 +161,8 @@ func GetOTP(entry vault.Entry) (otp.OTP, error) {
 		}
 
 		pass, err = otp.GenerateMOTP(secretData, entry.Info.Algo, entry.Info.Digits, int64(entry.Info.Period), entry.Info.Pin)
+	case "yaotp":
+		pass, err = otp.GenerateYAOTP(secretData, entry.Info.Algo, entry.Info.Digits, int64(entry.Info.Period), entry.Info.Pin)
 	default:
 		err = fmt.Errorf("unsupported otp type %q", entry.Type)
 	}

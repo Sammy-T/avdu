@@ -6,11 +6,13 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/sammy-t/avdu"
 	"github.com/sammy-t/avdu/vault"
 	"github.com/urfave/cli/v2"
+	"golang.org/x/term"
 )
 
 const timeFmt string = "2006/01/02 15:04:05"
@@ -21,8 +23,8 @@ var refreshes int
 func main() {
 	app := &cli.App{
 		Name:    "avdu",
-		Usage:   "Generate one-time passwords from an Aegis vault backup or export file.",
-		Version: "0.1.0",
+		Usage:   "Generate one-time passwords from an Aegis Authenticator vault backup or export file.",
+		Version: "0.2.0",
 		Flags: []cli.Flag{
 			&cli.PathFlag{
 				Name:    "path",
@@ -30,10 +32,10 @@ func main() {
 				Usage:   "specify the path to the vault file or directory",
 				Value:   ".",
 			},
-			&cli.StringFlag{
-				Name:    "pass",
-				Aliases: []string{"pwd", "k"},
-				Usage:   "specify the password used to decrypt the vault",
+			&cli.BoolFlag{
+				Name:    "encrypted",
+				Aliases: []string{"enc", "e"},
+				Usage:   "enables password input for decrypting the vault",
 			},
 			&cli.BoolFlag{
 				Name:    "refresh",
@@ -69,7 +71,21 @@ func cliAction(ctx *cli.Context) error {
 		return err
 	}
 
-	var pwd string = ctx.String("pass")
+	var encrypted bool = ctx.Bool("encrypted")
+	var pwd string
+
+	if encrypted {
+		fmt.Print("Enter password: ")
+
+		pwdBytes, err := term.ReadPassword(int(syscall.Stdin))
+		pwd = string(pwdBytes)
+
+		fmt.Println() // Ensure there's a newline for the next output
+
+		if err != nil {
+			return fmt.Errorf("cannot read password input %q: %w", pwd, err)
+		}
+	}
 
 	var vaultData *vault.Vault
 

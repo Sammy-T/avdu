@@ -12,8 +12,8 @@ import (
 )
 
 type OTP interface {
-	GetCode() any
-	GetDigits() int
+	Code() any
+	Digits() int
 	String() string
 }
 

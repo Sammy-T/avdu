@@ -12,11 +12,11 @@ type SteamOTP struct {
 	digits int
 }
 
-func (sotp SteamOTP) GetCode() any {
+func (sotp SteamOTP) Code() any {
 	return sotp.code
 }
 
-func (sotp SteamOTP) GetDigits() int {
+func (sotp SteamOTP) Digits() int {
 	return sotp.digits
 }
 

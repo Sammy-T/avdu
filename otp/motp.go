@@ -11,11 +11,11 @@ type MOTP struct {
 	digits int
 }
 
-func (motp MOTP) GetCode() any {
+func (motp MOTP) Code() any {
 	return motp.code
 }
 
-func (motp MOTP) GetDigits() int {
+func (motp MOTP) Digits() int {
 	return motp.digits
 }
 

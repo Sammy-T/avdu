@@ -11,11 +11,11 @@ type TOTP struct {
 	digits int
 }
 
-func (totp TOTP) GetCode() any {
+func (totp TOTP) Code() any {
 	return totp.code
 }
 
-func (totp TOTP) GetDigits() int {
+func (totp TOTP) Digits() int {
 	return totp.digits
 }
 

@@ -8,11 +8,11 @@ type HOTP struct {
 	digits int
 }
 
-func (hotp HOTP) GetCode() any {
+func (hotp HOTP) Code() any {
 	return hotp.code
 }
 
-func (hotp HOTP) GetDigits() int {
+func (hotp HOTP) Digits() int {
 	return hotp.digits
 }
 

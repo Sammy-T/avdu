@@ -11,14 +11,18 @@ type TOTP struct {
 	digits int
 }
 
+// Code returns the raw code used for calculating the OTP.
 func (totp TOTP) Code() any {
 	return totp.code
 }
 
+// Digits returns the character/digit length of the OTP.
 func (totp TOTP) Digits() int {
 	return totp.digits
 }
 
+// String returns the calculated OTP
+// used to authenticate with a service.
 func (totp TOTP) String() string {
 	var code int = int(totp.code % int64(math.Pow10(totp.digits)))
 

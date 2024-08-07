@@ -11,14 +11,18 @@ type MOTP struct {
 	digits int
 }
 
+// Code returns the raw code used for calculating the OTP.
 func (motp MOTP) Code() any {
 	return motp.code
 }
 
+// Digits returns the character/digit length of the OTP.
 func (motp MOTP) Digits() int {
 	return motp.digits
 }
 
+// String returns the calculated OTP
+// used to authenticate with a service.
 func (motp MOTP) String() string {
 	return motp.code[0:motp.digits]
 }

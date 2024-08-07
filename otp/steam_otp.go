@@ -12,14 +12,18 @@ type SteamOTP struct {
 	digits int
 }
 
+// Code returns the raw code used for calculating the OTP.
 func (sotp SteamOTP) Code() any {
 	return sotp.code
 }
 
+// Digits returns the character/digit length of the OTP.
 func (sotp SteamOTP) Digits() int {
 	return sotp.digits
 }
 
+// String returns the calculated OTP
+// used to authenticate with a service.
 func (sotp SteamOTP) String() string {
 	var steamAlphabet []rune = []rune(steamAlpha)
 	var alphabetLen int = len(steamAlphabet)

@@ -1,3 +1,5 @@
+// Package otp provides functionality for generating and reading
+// One-Time Passwords.
 package otp
 
 import (

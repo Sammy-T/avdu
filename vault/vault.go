@@ -1,3 +1,5 @@
+// Package vault provides functionality for interacting with
+// Aegis Authenticator vault data.
 package vault
 
 import (

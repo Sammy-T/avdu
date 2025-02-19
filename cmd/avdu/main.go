@@ -129,13 +129,13 @@ func displayOTPs(vaultData *vault.Vault) {
 
 	var builder strings.Builder
 
-	builder.WriteString("\n- OTPs -\n")
+	builder.WriteString("- OTPs -\n")
 
 	for _, entry := range vaultData.Db.Entries {
-		fmt.Fprintf(&builder, "\n%v (%v)\n%v\n", entry.Issuer, entry.Name, otps[entry.Uuid])
+		fmt.Fprintf(&builder, "%v (%v): %v\n", entry.Issuer, entry.Name, otps[entry.Uuid])
 	}
 
-	fmt.Printf("%v %v\n", time.Now().Format(timeFmt), builder.String())
+	fmt.Printf("%v\n%v\n", time.Now().Format(timeFmt), builder.String())
 }
 
 // countdownOTPs outputs a countdown and displays the current OTPs

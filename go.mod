@@ -1,10 +1,12 @@
 module github.com/sammy-t/avdu
 
-go 1.22.4
+go 1.23.0
+
+toolchain go1.24.0
 
 require (
 	github.com/urfave/cli/v2 v2.27.5
-	golang.org/x/crypto v0.33.0
+	golang.org/x/crypto v0.35.0
 	golang.org/x/term v0.29.0
 )
 

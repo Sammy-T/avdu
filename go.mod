@@ -5,8 +5,8 @@ go 1.23.0
 toolchain go1.24.1
 
 require (
-	github.com/urfave/cli/v2 v2.27.6
-	golang.org/x/crypto v0.38.0
+	github.com/urfave/cli/v2 v2.27.7
+	golang.org/x/crypto v0.39.0
 	golang.org/x/term v0.32.0
 )
 

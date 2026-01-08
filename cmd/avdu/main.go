@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -44,6 +45,26 @@ func main() {
 			},
 		},
 		Action: cliAction,
+		Commands: []*cli.Command{
+			{
+				Name:  "decrypt",
+				Usage: "Decrypt an encrypted vault file to plaintext format",
+				Flags: []cli.Flag{
+					&cli.PathFlag{
+						Name:     "path",
+						Aliases:  []string{"p"},
+						Usage:    "path to the encrypted vault file",
+						Required: true,
+					},
+					&cli.PathFlag{
+						Name:    "output",
+						Aliases: []string{"o"},
+						Usage:   "output path for decrypted vault (defaults to stdout)",
+					},
+				},
+				Action: decryptAction,
+			},
+		},
 	}
 
 	if err := app.Run(os.Args); err != nil {
@@ -161,4 +182,41 @@ func countdownOTPs(vaultData *vault.Vault, ch chan int) {
 	}
 
 	ch <- 0 // Return arbitrary data to free up the channel
+}
+
+func decryptAction(ctx *cli.Context) error {
+	path := ctx.Path("path")
+	outputPath := ctx.Path("output")
+
+	fmt.Fprint(os.Stderr, "Enter password: ")
+
+	pwdBytes, err := term.ReadPassword(int(syscall.Stdin))
+	if err != nil {
+		return fmt.Errorf("cannot read password input: %w", err)
+	}
+	pwd := string(pwdBytes)
+
+	fmt.Fprintln(os.Stderr) // Newline after password input
+
+	vaultData, err := avdu.ReadAndDecryptVaultFile(path, pwd)
+	if err != nil {
+		return fmt.Errorf("cannot decrypt vault %q: %w", path, err)
+	}
+
+	// Marshal with indentation to match Aegis export format
+	output, err := json.MarshalIndent(vaultData, "", "    ")
+	if err != nil {
+		return fmt.Errorf("cannot marshal vault: %w", err)
+	}
+
+	if outputPath != "" {
+		if err := os.WriteFile(outputPath, output, 0600); err != nil {
+			return fmt.Errorf("cannot write to %q: %w", outputPath, err)
+		}
+		fmt.Fprintf(os.Stderr, "Decrypted vault written to %s\n", outputPath)
+	} else {
+		fmt.Println(string(output))
+	}
+
+	return nil
 }

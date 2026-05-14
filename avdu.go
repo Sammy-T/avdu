@@ -54,8 +54,17 @@ func ReadVaultFile(filePath string) (*vault.Vault, error) {
 	}
 
 	err = json.Unmarshal(data, &vault)
+	if err != nil {
+		return nil, err
+	}
 
-	return &vault, err
+	// A simple check to see if the parsed vault is valid
+	if vault.Version == 0 {
+		err = fmt.Errorf("invalid or empty vault")
+		return nil, err
+	}
+
+	return &vault, nil
 }
 
 // ReadVaultFileEnc parses the json file at the path
@@ -69,8 +78,17 @@ func ReadVaultFileEnc(filePath string) (*vault.VaultEncrypted, error) {
 	}
 
 	err = json.Unmarshal(data, &vault)
+	if err != nil {
+		return nil, err
+	}
 
-	return &vault, err
+	// A simple check to see if the parsed vault is valid
+	if vault.Version == 0 {
+		err = fmt.Errorf("invalid or empty vault")
+		return nil, err
+	}
+
+	return &vault, nil
 }
 
 // ReadAndDecryptVaultFile parses the json file at the path,

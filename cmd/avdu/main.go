@@ -25,7 +25,7 @@ func main() {
 	app := &cli.App{
 		Name:    "avdu",
 		Usage:   "Generate one-time passwords from an Aegis Authenticator vault backup or export file.",
-		Version: "0.5.0",
+		Version: "v0.5.1",
 		Flags: []cli.Flag{
 			&cli.PathFlag{
 				Name:    "path",
